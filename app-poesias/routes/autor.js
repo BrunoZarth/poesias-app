@@ -27,7 +27,6 @@ router.post("/", (req, res) => {
     const password = String(autor.senha);
     const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 
-    // Exemplo de como inserir dados na tabela 'autores'
     const query = 'INSERT INTO autores (id, nome, email, img, hash, salt) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
     const values = [id, nome, autor.email, img, hash, salt];
 
