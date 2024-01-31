@@ -11,21 +11,21 @@ const client = new Client({
    password: '1234',
    port: 5432,
 });
-
+const cookieParser = require('cookie-parser');
 client.connect();
 
 //Cadastro de produtos 
-router.post("/", (req, res) => {
+router.post("/", authorization ,(req, res) => {
 
    const autorQuery = `SELECT * from public.autores WHERE email = '${req.body.autor}'`;
    console.log("autor: " + req.body.autor)
-   let autor = "";
+   var autor = "";
    client.query(autorQuery, (err, result) => {
       if (err) {
          console.error(`Erro ao buscar autor ${req.body.autor} no banco de dados:`, err);
          res.status(500).json({ error: `Erro ao buscar autor ${req.body.autor} no banco de dados:` });
       } else {
-         
+
          autor = result.rows[0];
          autor = autor instanceof Object ? autor : Object(autor);
          console.log('Autor:', autor);
@@ -69,8 +69,32 @@ router.get("/", (req, res) => {
 });
 
 // Edição do produto 
-router.put("/:id", (req, res) => {
+router.put("/:id", authorization,(req, res) => {
    const id = req.params.id;
+
+   const cookieAutorLogado = req.cookies.autorLogado;
+   const querySelectPoesia = `SELECT * FROM poesias WHERE id = '${id}'`;
+var poesiaResult = ""
+client.query(querySelectPoesia, (err, result) => {
+   if (err) {
+      console.error(`Erro ao buscar poesia de id ${id} no banco de dados:`, err);
+      res.status(500).json({ error: `Erro ao buscar poesia de id ${id} no banco de dados:` });
+   } else {
+
+      poesiaResult = result.rows[0];
+      poesiaResult = Object(poesiaResult);
+      console.log('Poesia:', poesiaResult.autor);
+   }
+})
+
+   
+   console.log("cookie autor logado: " + cookieAutorLogado)
+    
+   if (poesiaResult !== cookieAutorLogado) {
+   res.status(500).json({ error: `Acesso negado: Somente o autor da poesia pode edita-la.` });
+   }
+
+
    const poesia = req.body.poesia;
    const autor = req.body.autor;
 
@@ -92,8 +116,29 @@ router.put("/:id", (req, res) => {
 });
 
 // Exclusão do produto
-router.delete("/:id", (req, res) => {
+router.delete("/:id", authorization, (req, res) => {
    const id = req.params.id;
+   const cookieAutorLogado = req.cookies.autorLogado;
+   const querySelectPoesia = `SELECT * FROM poesias WHERE id = '${id}'`;
+var poesia = ""
+client.query(querySelectPoesia, (err, result) => {
+   if (err) {
+      console.error(`Erro ao buscar poesia de id ${id} no banco de dados:`, err);
+      res.status(500).json({ error: `Erro ao buscar poesia de id ${id} no banco de dados:` });
+   } else {
+
+      poesia = result.rows[0];
+      poesia = Object(poesia);
+      console.log('Poesia:', poesia.autor);
+   }
+})
+
+   
+   console.log("cookie autor logado: " + cookieAutorLogado)
+    
+   if (poesia.autor !== cookieAutorLogado) {
+   res.status(500).json({ error: `Acesso negado: Somente o autor da poesia pode apaga-la.` });
+   }
 
    const query = `DELETE FROM poesias WHERE id = '${id}' RETURNING *`;
 
@@ -113,7 +158,7 @@ router.delete("/:id", (req, res) => {
 });
 
 // Busca por autor
-router.get("/autor/:autor", (req, res) => {
+router.get("/autor/:autor", authorization, (req, res) => {
    const autor = req.params.autor;
 
    const query = `SELECT * FROM poesias WHERE autor = '${autor}'`;

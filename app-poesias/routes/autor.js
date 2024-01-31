@@ -69,6 +69,7 @@ router.post("/login", (req, res) => {
                     //res.status(200).json({ message: 'Login bem-sucedido', userId: user.id, token });
                     res
                         .cookie("access_token", accessToken, { httpOnly: true, secure: false })
+                        .cookie("autorLogado", user.email, { httpOnly: true, secure: false })
                         .status(200)
                         .json({ message: "Login bem sucedido!" });
                 } else {
