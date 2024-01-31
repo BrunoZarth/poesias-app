@@ -66,7 +66,6 @@ router.post("/login", (req, res) => {
                     const accessToken = jwt.sign({ userId: user.id }, 'qRzU8sXwY5vF3tG7hB1nM', { expiresIn: '1h' });
 
                     // Enviar o token como resposta
-                    //res.status(200).json({ message: 'Login bem-sucedido', userId: user.id, token });
                     res
                         .cookie("access_token", accessToken, { httpOnly: true, secure: false })
                         .cookie("autorLogado", user.email, { httpOnly: true, secure: false })
@@ -74,8 +73,6 @@ router.post("/login", (req, res) => {
                         .json({ message: "Login bem sucedido!" });
                 } else {
                     // Senha incorreta
-                    //res.status(401).json({ error: 'E-mail ou senha incorretos' });
-
                     res
                         .clearCookie("access_token")
                         .status(400)
@@ -98,9 +95,6 @@ router.get("/", authorization, (req, res) => {
         }
     })
 });
-
-//Download da imagem do autor 
-//a fazer
 
 
 module.exports = router;

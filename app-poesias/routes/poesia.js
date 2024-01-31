@@ -34,10 +34,6 @@ router.post("/", authorization ,(req, res) => {
 
    const id = crypto.randomBytes(16).toString('hex');
    const poesia = req.body.poesia;
-   //const autor = req.body.autor;
-
-   //const query = 'INSERT INTO public.poesias (id, poesia, autor) VALUES ($1, $2, $3) RETURNING *';
-   //const values = [id, poesia, autor];
 
    const query = `INSERT INTO poesias (id, poesia, autor) VALUES ('${id}', '${poesia}', '${req.body.autor}')`;
 
