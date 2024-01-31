@@ -1,19 +1,20 @@
 # Como executar o projeto:
-
+```bash
 cd app-poesias
 docker compose up
 cd src
 node app.js
+````
 
-acesse http://localhost:3000/main
+Acesse http://localhost:3000/main
 
 
 # Para abrir o bash do db:
-
+```bash
 docker-compose exec postgres psql -U postgres 
 \l # para listar bancos de dados
 \c poesias # para conectar ao db poesias 
-
+```
 # Sobre o projeto:
 
 O projeto possui um backend em node com banco de dados postgres; e um frontend (view) minimo (não concluído, faltando as seções de interação com poesias), feito majoritariamente com injeções de js. 
@@ -27,4 +28,3 @@ Não faria muito sentido as poesias possuirem imagens, portanto, deixei esta op�
 Pode-se verificar a lista de autores e baixar as fotos na sessão Autores (botão). 
 
 Para isto, ao cadastrar um autor (botão Cadastrar Autor), anteriormente deve-se fazer o upload da imagem.
-
